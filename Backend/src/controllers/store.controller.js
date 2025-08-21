@@ -34,6 +34,7 @@ exports.createStore = async (req, res) => {
       address,
       rating: 0,
       ownerId: req.user.id, // store owner is the logged-in user
+      
     });
     res.status(201).json({ message: "Store created successfully", store });
   } catch (err) {
