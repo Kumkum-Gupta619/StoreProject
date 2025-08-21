@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User } = require("../models/user.model");
 
 // Get all users (Admin only)
 exports.getAllUsers = async (req, res) => {

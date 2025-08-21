@@ -1,4 +1,5 @@
-const { Rating, Store, User } = require("../models");
+// const { Rating, Store, User } = require("../models/rating.model"); /
+const { Rating, Store, User } = require("../models/");
 
 // Add or Update Rating
 exports.addOrUpdateRating = async (req, res) => {
