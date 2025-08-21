@@ -12,4 +12,15 @@ app.use("/api/users", require("./routes.js/user.routes"));
 app.use("/api/stores", require("./routes.js/store.routes"));
 app.use("/api/ratings", require("./routes.js/rating.routes"));
 
+
+app.get("/", (req, res) => {
+    res.send("store app")
+    console.log("server started ");
+
+})
+
+app.listen(3000, () => {
+    console.log("server started at 3000");
+
+})
 module.exports = app;
