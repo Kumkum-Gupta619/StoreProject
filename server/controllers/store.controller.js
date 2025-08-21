@@ -1,4 +1,4 @@
-const { Store, Rating } = require("../models");
+const { Store, Rating } = require("../models/store.model");
 
 // Get all stores
 exports.getAllStores = async (req, res) => {
@@ -34,7 +34,7 @@ exports.createStore = async (req, res) => {
       address,
       rating: 0,
       ownerId: req.user.id, // store owner is the logged-in user
-      
+
     });
     res.status(201).json({ message: "Store created successfully", store });
   } catch (err) {
