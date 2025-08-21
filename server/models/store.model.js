@@ -9,3 +9,5 @@ const Store = sequelize.define("Store", {
 });
 
 module.exports = Store;
+
+
