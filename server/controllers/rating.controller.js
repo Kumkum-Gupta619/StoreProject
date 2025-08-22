@@ -1,16 +1,19 @@
-const { Rating, Store, User } = require("../models/rating.model");
+// controllers/rating.controller.js
+const Store = require("../models/store.model")
+const User = require("../models/user.model")
+const Rating = require('../models/rating.model')
 
 // Add or Update Rating
 exports.addOrUpdateRating = async (req, res) => {
+  const { rating, comment, storeId } = req.body;
+  console.log("here is the rating controller", req.body);
   try {
-    const { storeId } = req.params;
-    const { rating, comment } = req.body;
 
-    // check if store exists
-    const store = await Store.findByPk(storeId);
+    const store = await Store.findByPk(storeId)
+    // console.log(store);
     if (!store) return res.status(404).json({ message: "Store not found" });
 
-    // check if user already rated
+    // check if user already rated this store
     let existingRating = await Rating.findOne({
       where: { storeId, userId: req.user.id },
     });
@@ -33,7 +36,7 @@ exports.addOrUpdateRating = async (req, res) => {
 
     res.status(201).json({ message: "Rating added", rating: newRating });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message, details: err.errors });
   }
 };
 

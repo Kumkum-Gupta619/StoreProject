@@ -3,15 +3,23 @@ const sequelize = require("../config/db.config");
 const User = require("./user.model");
 const Store = require("./store.model");
 
+
 const Rating = sequelize.define("Rating", {
-  id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-  rating: { type: DataTypes.INTEGER, allowNull: false, validate: { min: 0, max: 5 } },
+  rating: {
+    type: DataTypes.INTEGER,  // Example: 1 to 5
+    allowNull: false
+  },
+  comment: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
 });
 
-// Relations
-User.hasMany(Rating);
-Rating.belongsTo(User);
-Store.hasMany(Rating);
-Rating.belongsTo(Store);
+Rating.associate = (models) => {
+  Rating.belongsTo(models.User, { foreignKey: "userId" });
+  Rating.belongsTo(models.Store, { foreignKey: "storeId" });
+};
+
 
 module.exports = Rating;
+

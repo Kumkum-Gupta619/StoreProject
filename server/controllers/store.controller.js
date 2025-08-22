@@ -4,10 +4,16 @@ const Store = require("../models/store.model");
 exports.getAllStores = async (req, res) => {
   try {
     const stores = await Store.findAll();
-    res.json(stores);
+
+    // Add default rating field in the response
+    const storesWithRating = stores.map(store => ({
+      ...store.toJSON(),
+      rating: `${store.rating || 0} out of 5`
+    }));
+
+    res.json(storesWithRating);
   } catch (err) {
     res.status(500).json({ error: err.message, details: err.errors });
-
   }
 };
 
