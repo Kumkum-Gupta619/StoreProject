@@ -1,25 +1,30 @@
 import { useEffect, useState } from "react";
 import StoreCard from "../StoreCard";
 import StoreFilter from "../StoreFilter";
-
+import axios from 'axios'
 const StoreList = () => {
     // ✅ Instead of Redux, manage everything locally
-    const [allStores, setAllStores] = useState([
-        // Dummy data for now (replace with API later)
-        { _id: "1", name: "Pizza Hut", address: "New York", rating: 4 },
-        { _id: "2", name: "Domino's", address: "Chicago", rating: 5 },
-        { _id: "3", name: "Burger King", address: "Los Angeles", rating: 3 },
-    ]);
+    const [allStores, setAllStores] = useState([]);
 
+    const data = async () => {
+        try {
+            const d = await axios.get('http://localhost:3000/api/stores');
+            console.log(d.data);
+            setAllStores(d.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    useEffect(() => {
+        data()
+    })
     const [filterQuery, setFilterQuery] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredStores, setFilteredStores] = useState(allStores);
 
-    // ✅ Filtering and Searching
     useEffect(() => {
         let results = allStores;
 
-        // Apply filter query (by name/address)
         if (filterQuery) {
             results = results.filter(
                 (store) =>
