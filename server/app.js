@@ -14,9 +14,13 @@ app.use("/api/ratings", require("./routes.js/rating.routes"));
 
 
 app.get("/", (req, res) => {
-    res.send("server started");
+    res.send("store app")
+    console.log("server started ");
+
 })
+
 app.listen(3000, () => {
-    console.log("server started");
+    console.log("server started at 3000");
+
 })
 module.exports = app;

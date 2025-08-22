@@ -1,11 +1,11 @@
-// controllers/rating.controller.js
 const db = require("../models"); 
 const { Rating, User, Store } = db;  // Destructure models from db
+const { Sequelize } = require("sequelize");
 
 // Add or Update Rating
 exports.addOrUpdateRating = async (req, res) => {
+  const { rating, comment, storeId } = req.body;
   try {
-    const { storeId, rating, comment } = req.body;
     const userId = req.user.id;
 
     let existingRating = await Rating.findOne({ where: { userId, storeId } });
@@ -20,7 +20,7 @@ exports.addOrUpdateRating = async (req, res) => {
     const newRating = await Rating.create({ userId, storeId, rating, comment });
     res.status(201).json(newRating);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message, details: err.errors });
   }
 };
 
@@ -100,3 +100,26 @@ exports.getUserRatings = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// // ✅ Get Average Rating of a Store
+// exports.getAverageRatingForStore = async (req, res) => {
+//   try {
+//     const { storeId } = req.params;
+
+//     const result = await Rating.findOne({
+//       where: { storeId },
+//       attributes: [
+//         [Sequelize.fn("AVG", Sequelize.col("rating")), "averageRating"],
+//         [Sequelize.fn("COUNT", Sequelize.col("id")), "totalRatings"],
+//       ],
+//     });
+
+//     if (!result || !result.dataValues.totalRatings) {
+//       return res.status(404).json({ message: "No ratings found for this store" });
+//     }
+
+//     res.json(result);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
