@@ -1,4 +1,4 @@
-const { Store, Rating } = require("../models/store.model");
+const Store = require("../models/store.model");
 
 // Get all stores
 exports.getAllStores = async (req, res) => {
