@@ -1,17 +1,14 @@
 import { Input } from "../ui/input";
-import { RadioGroup } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { api } from "@/api/api";
 
 const Login = () => {
-    // Initial state for input fields
     const [input, setInput] = useState({
         email: "",
         password: "",
-        role: "",
     });
 
     const [isLoading, setIsLoading] = useState(false);
@@ -27,25 +24,35 @@ const Login = () => {
 
         try {
             setIsLoading(true);
-            const res = await api.post(`/api/user/login`, input, {
+            const res = await api.post(`/api/auth/login`, input, {
                 headers: {
                     "Content-Type": "application/json",
                 },
                 withCredentials: true,
             });
+            console.log(res);
 
             if (res.data.success) {
-                // Instead of Redux, just navigate and show toast
-                navigate("/");
-                toast.success(res.data.message);
+                // ✅ Save token to localStorage
+                localStorage.setItem("token", res.data.token);
+
+                toast.success(res.data.message || "Login successful!");
+                navigate("/"); // redirect to home (or dashboard)
+            } else {
+                toast.error(res.data.message || "Login failed");
             }
         } catch (error) {
-            console.log(error.message);
+            console.error(error.message);
             toast.error(error.response?.data?.message || "Login failed");
         } finally {
             setIsLoading(false);
         }
     };
+
+    const token = localStorage.getItem("token");
+    useEffect(() => {
+        if (token) navigate("/stores");
+    }, [])
 
     return (
         <section className="pt-10 pb-10">
@@ -75,35 +82,6 @@ const Login = () => {
                             className="w-full"
                             placeholder="Password"
                         />
-                    </div>
-
-                    {/* Role */}
-                    <div className="mb-5">
-                        <Label className="block text-gray-700 mb-3">Select Your Role</Label>
-                        <RadioGroup className="flex gap-4">
-                            <div className="flex gap-2 border-1 px-5 rounded-3xl shadow-2xs">
-                                <Input
-                                    name="role"
-                                    value="Vender"
-                                    checked={input.role === "Vender"}
-                                    onChange={handleChange}
-                                    type="radio"
-                                    className="cursor-pointer"
-                                />
-                                <Label className="text-gray-700">Vender</Label>
-                            </div>
-                            <div className="flex gap-2 border-1 px-5 rounded-3xl shadow-2xs">
-                                <Input
-                                    type="radio"
-                                    name="role"
-                                    value="User"
-                                    checked={input.role === "User"}
-                                    onChange={handleChange}
-                                    className="cursor-pointer"
-                                />
-                                <Label className="text-gray-700">User</Label>
-                            </div>
-                        </RadioGroup>
                     </div>
 
                     {/* Submit */}

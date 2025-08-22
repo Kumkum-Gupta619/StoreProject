@@ -1,42 +1,53 @@
 import { useEffect, useState } from "react";
 import StoreCard from "../StoreCard";
 import StoreFilter from "../StoreFilter";
-import axios from 'axios'
+import { api } from "@/api/api";
 const StoreList = () => {
-    // ✅ Instead of Redux, manage everything locally
-    const [allStores, setAllStores] = useState([]);
-
-    const data = async () => {
-        try {
-            const d = await axios.get('http://localhost:3000/api/stores');
-            console.log(d.data);
-            setAllStores(d.data);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    useEffect(() => {
-        data()
-    })
+    const [allStores, setAllStores] = useState([]); // must be array
     const [filterQuery, setFilterQuery] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
-    const [filteredStores, setFilteredStores] = useState(allStores);
+    const [filteredStores, setFilteredStores] = useState([]);
+
+    // Fetch stores
+    const fetchStores = async () => {
+        try {
+            const res = await api.get("/api/stores");
+
+            console.log("API response:", res.data);
+
+            if (Array.isArray(res.data)) {
+                setAllStores(res.data);
+            } else if (Array.isArray(res.data.stores)) {
+                setAllStores(res.data.stores);
+            } else {
+                console.error("Unexpected response format:", res.data);
+                setAllStores([]);
+            }
+        } catch (error) {
+            console.error("Error fetching stores:", error);
+            setAllStores([]);
+        }
+    };
 
     useEffect(() => {
-        let results = allStores;
+        fetchStores();
+    }, []);
+
+    // Apply filtering + search
+    useEffect(() => {
+        let results = [...allStores]; // clone array
 
         if (filterQuery) {
             results = results.filter(
                 (store) =>
-                    store.name.toLowerCase().includes(filterQuery.toLowerCase()) ||
-                    store.address.toLowerCase().includes(filterQuery.toLowerCase())
+                    store.name?.toLowerCase().includes(filterQuery.toLowerCase()) ||
+                    store.address?.toLowerCase().includes(filterQuery.toLowerCase())
             );
         }
 
-        // Apply search query (by name)
         if (searchQuery) {
             results = results.filter((store) =>
-                store.name.toLowerCase().includes(searchQuery.toLowerCase())
+                store.name?.toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
@@ -45,9 +56,8 @@ const StoreList = () => {
 
     return (
         <div className="m-auto max-w-screen-xl my-5 px-5">
-            {/* Main Container */}
             <div className="flex flex-col lg:flex-row gap-5">
-                {/* Store Filter Section */}
+                {/* Store Filter */}
                 <div className="w-full lg:w-1/4 bg-white p-5 border rounded-2xl h-fit lg:sticky lg:top-20">
                     <StoreFilter
                         filterQuery={filterQuery}
@@ -57,16 +67,16 @@ const StoreList = () => {
                     />
                 </div>
 
-                {/* Store Cards Section */}
+                {/* Store Cards */}
                 <div className="w-full lg:w-3/4 lg:ml-0">
-                    {filteredStores.length <= 0 ? (
+                    {!Array.isArray(filteredStores) || filteredStores.length === 0 ? (
                         <div className="flex justify-center items-center h-full">
                             <span className="text-2xl font-mono">Store Not Found!</span>
                         </div>
                     ) : (
                         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                             {filteredStores.map((store) => (
-                                <li key={store?._id} className="list-none">
+                                <li key={store.id || store._id} className="list-none">
                                     <StoreCard store={store} />
                                 </li>
                             ))}

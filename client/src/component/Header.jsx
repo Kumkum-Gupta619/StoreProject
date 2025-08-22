@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { LogOut, Menu, User, X, Briefcase, Store } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Popover, PopoverTrigger, PopoverContent } from "@radix-ui/react-popover";
 import { toast } from "sonner";
+import { Avatar, AvatarImage } from "./ui/avatar";
 
 const Header = ({ user, setUser }) => {
     const UserNavLinks = [
@@ -9,6 +11,9 @@ const Header = ({ user, setUser }) => {
         { name: "Stores", path: "/stores" },
         { name: "Saved", path: "/saved" },
     ];
+
+    const token = localStorage.getItem('token');
+
 
     const recruiterNavLinks = [{ name: "Dashboard", path: "/recruiter/dashboard" }];
 
@@ -99,7 +104,7 @@ const Header = ({ user, setUser }) => {
                         {/* Right Section */}
                         <div className="flex items-center gap-4">
                             <div className="sm:flex sm:gap-4">
-                                {!user ? (
+                                {!token ? (
                                     <>
                                         <Link to="/register">
                                             <button

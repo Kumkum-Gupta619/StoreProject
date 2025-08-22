@@ -2,18 +2,17 @@ import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { api } from "@/api/api";
 const Register = () => {
     const navigate = useNavigate();
     const [input, setInput] = useState({
-        fullName: "",
+        name: "",
         email: "",
-        phoneNumber: "",
         password: "",
+        address: "",
         role: "",
-        profile: "",
     });
 
     const [isLoading, setIsLoading] = useState(false);
@@ -32,24 +31,34 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const formData = new FormData();
-        formData.append("fullName", input.fullName);
-        formData.append("email", input.email);
-        formData.append("phoneNumber", input.phoneNumber);
-        formData.append("password", input.password);
-        formData.append("role", input.role);
+        // const formData = new FormData();
+        // formData.append("name",);
+        // formData.append();
+        // formData.append();
+        // formData.append();
+        // formData.append();
 
-        if (input.profile) formData.append("file", input.profile);
+        // if (input.profile) formData.append("file", input.profile);
+        console.log("here is the form data", {
+            "name": input.name,
+            "email": input.email,
+            "password": input.password,
+            "address": input.address,
+            "role": input.role
 
+        });
         try {
             setIsLoading(true);
-            const res = await api.post(`/api/user/register`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-                withCredentials: true,
-            });
+            const res = await api.post(`/api/auth/signup`, {
+                "name": input.name,
+                "email": input.email,
+                "password": input.password,
+                "address": input.address,
+                "role": input.role
 
+            },
+                { withCredentials: true });
+            console.log(res.data, "res.data.success", res.data.success);
             if (res.data.success) {
                 navigate("/login");
                 toast.success(res.data.message);
@@ -61,7 +70,11 @@ const Register = () => {
             setIsLoading(false);
         }
     };
-
+    console.log(input);
+    const token = localStorage.getItem("token");
+    useEffect(() => {
+        if (token) navigate("/stores");
+    }, [])
     return (
         <section className="pt-10 pb-10">
             <div className="max-w-2xl mx-auto border-1 shadow-2xs rounded-2xl">
@@ -70,8 +83,8 @@ const Register = () => {
                     <div className="mb-5">
                         <Label className="block text-gray-700 mb-2">Full Name</Label>
                         <Input
-                            name="fullName"
-                            value={input.fullName}
+                            name="name"
+                            value={input.name}
                             onChange={handleChange}
                             type="text"
                             className="w-full"
@@ -91,19 +104,19 @@ const Register = () => {
                             placeholder="Email"
                         />
                     </div>
-
-                    {/* Phone Number */}
+                    {/* address */}
                     <div className="mb-5">
-                        <Label className="block text-gray-700 mb-2">Phone Number</Label>
+                        <Label className="block text-gray-700 mb-2">address</Label>
                         <Input
-                            name="phoneNumber"
-                            value={input.phoneNumber}
+                            name="address"
+                            value={input.address}
                             onChange={handleChange}
-                            type="text"
+                            type="address"
                             className="w-full"
-                            placeholder="Phone Number"
+                            placeholder="address"
                         />
                     </div>
+
 
                     {/* Password */}
                     <div className="mb-5">
@@ -148,7 +161,7 @@ const Register = () => {
                     </div>
 
                     {/* Profile Photo */}
-                    <div className="mb-5">
+                    {/* <div className="mb-5">
                         <Label className="block text-gray-700 mb-3">Profile Photo</Label>
                         <Input
                             type="file"
@@ -156,7 +169,7 @@ const Register = () => {
                             className="w-full"
                             accept="image/*"
                         />
-                    </div>
+                    </div> */}
 
                     {/* Submit */}
                     <div className="mb-3 items-center gap-2">

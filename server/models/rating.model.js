@@ -1,35 +1,17 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/db.config");
-const User = require("./user.model");
-const Store = require("./store.model");
 
-
-const Rating = sequelize.define("ratings", {
-  rating: {
-    type: DataTypes.INTEGER,  // Example: 1 to 5
-    allowNull: false
+const Rating = sequelize.define(
+  "Rating",
+  {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    storeId: { type: DataTypes.INTEGER, allowNull: false },
+    userId: { type: DataTypes.INTEGER, allowNull: false },
+    rating: { type: DataTypes.INTEGER, allowNull: false },
+    comment: { type: DataTypes.STRING },
   },
-  comment: {
-    type: DataTypes.STRING,
-    allowNull: true
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    foreignKey: true
-  },
-  storeId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    foreignKey: true
-  }
-});
-
-Rating.associate = (models) => {
-  Rating.belongsTo(models.User, { foreignKey: "userId" });
-  Rating.belongsTo(models.Store, { foreignKey: "storeId" });
-};
+  { timestamps: false }
+);
 
 
 module.exports = Rating;
-

@@ -3,7 +3,11 @@ const app = express();
 const cors = require("cors");
 require("dotenv").config();
 
-app.use(cors());
+
+app.use(cors({
+    origin: "http://localhost:5173", // frontend ka URL
+    credentials: true,               // cookies / auth ke liye
+}));
 app.use(express.json());
 
 // Routes

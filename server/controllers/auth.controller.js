@@ -6,8 +6,12 @@ const users = require("../models/user.model.js")
 
 // Signup
 exports.signup = async (req, res) => {
+  console.log(req.body);
   try {
     const { name, email, password, role, address } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
     console.log(req.body);
     const existingUser = await users.findOne({ where: { email } });
     if (existingUser) return res.status(400).json({ message: "Email already exists" });
@@ -22,7 +26,10 @@ exports.signup = async (req, res) => {
       address,
     });
 
-    res.status(201).json({ message: "User registered successfully", user });
+    res.status(201).json({
+      success: true,
+      message: "User registered successfully", user
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -43,7 +50,10 @@ exports.login = async (req, res) => {
       expiresIn: "1d",
     });
 
-    res.json({ message: "Login successful", token, user });
+    res.json({
+      success: true,
+      message: "Login successful", token, user
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

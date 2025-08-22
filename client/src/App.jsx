@@ -6,6 +6,7 @@ import Home from "./component/pages/Home";
 import Login from "./component/auth/Login";
 import Register from "./component/auth/Register";
 import StoreList from "./component/pages/Stores";
+import StoreDetails from "./component/StoreDetails";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
         path: "/stores",
         element: <StoreList />,
       },
+      {
+        path: "/stores/:id",
+        element: <StoreDetails />
+      }
 
     ],
   },
