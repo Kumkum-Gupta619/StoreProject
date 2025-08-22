@@ -1,14 +1,13 @@
-const { Store, Rating } = require("../models/store.model");
+const Store = require("../models/store.model");
 
 // Get all stores
 exports.getAllStores = async (req, res) => {
   try {
-    const stores = await Store.findAll({
-      include: [{ model: Rating, attributes: ["rating"] }],
-    });
+    const stores = await Store.findAll();
     res.json(stores);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message, details: err.errors });
+
   }
 };
 
@@ -28,17 +27,19 @@ exports.getStoreById = async (req, res) => {
 // Create store (Owner only)
 exports.createStore = async (req, res) => {
   try {
-    const { name, address } = req.body;
+    const { name, address, storeImg } = req.body;
+    console.log(req.body);
     const store = await Store.create({
       name,
       address,
-      rating: 0,
-      ownerId: req.user.id, // store owner is the logged-in user
+      storeImg: storeImg,
+      rating: 1,
+      ownerId: req.user.id,
 
     });
     res.status(201).json({ message: "Store created successfully", store });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message, details: err.errors });
   }
 };
 

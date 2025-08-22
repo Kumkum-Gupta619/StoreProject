@@ -9,8 +9,8 @@ router.get("/", storeController.getAllStores);
 router.get("/:id", storeController.getStoreById);
 
 // Only StoreOwner can create/update their store
-router.post("/", auth, role("Owner"), storeController.createStore);
-router.put("/:id", auth, role("Owner"), storeController.updateStore);
-router.delete("/:id", auth, role("Owner"), storeController.deleteStore);
+router.post("/", auth, role("owner"), storeController.createStore);
+router.put("/:id", auth, role("owner"), storeController.updateStore);
+router.delete("/:id", auth, role("owner"), storeController.deleteStore);
 
 module.exports = router;
