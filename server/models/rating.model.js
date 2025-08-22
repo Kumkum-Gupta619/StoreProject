@@ -4,7 +4,7 @@ const User = require("./user.model");
 const Store = require("./store.model");
 
 
-const Rating = sequelize.define("Rating", {
+const Rating = sequelize.define("ratings", {
   rating: {
     type: DataTypes.INTEGER,  // Example: 1 to 5
     allowNull: false
@@ -12,6 +12,16 @@ const Rating = sequelize.define("Rating", {
   comment: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    foreignKey: true
+  },
+  storeId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    foreignKey: true
   }
 });
 
