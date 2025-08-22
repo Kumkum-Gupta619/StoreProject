@@ -8,13 +8,20 @@ const Store = sequelize.define("Store", {
   storeImg: {
     type: DataTypes.STRING,
   },
+  ownerId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+
+},
   rating: { type: DataTypes.INTEGER, defaultValue: 0 },
 },
+
   {
     timestamps: true
   }
 
 );
+
 
 module.exports = Store;
 
