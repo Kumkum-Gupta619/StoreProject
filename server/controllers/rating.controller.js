@@ -1,68 +1,67 @@
-const { Rating, Store, User } = require("../models/rating.model");
+// controllers/rating.controller.js
+const db = require("../models"); 
+const { Rating, User, Store } = db;  // Destructure models from db
 
 // Add or Update Rating
 exports.addOrUpdateRating = async (req, res) => {
   try {
-    const { storeId } = req.params;
-    const { rating, comment } = req.body;
+    const { storeId, rating, comment } = req.body;
+    const userId = req.user.id;
 
-    // check if store exists
-    const store = await Store.findByPk(storeId);
-    if (!store) return res.status(404).json({ message: "Store not found" });
-
-    // check if user already rated
-    let existingRating = await Rating.findOne({
-      where: { storeId, userId: req.user.id },
-    });
+    let existingRating = await Rating.findOne({ where: { userId, storeId } });
 
     if (existingRating) {
-      // update rating
       existingRating.rating = rating;
       existingRating.comment = comment;
       await existingRating.save();
-      return res.json({ message: "Rating updated", rating: existingRating });
+      return res.json(existingRating);
     }
 
-    // new rating
-    const newRating = await Rating.create({
-      storeId,
-      userId: req.user.id,
-      rating,
-      comment,
-    });
-
-    res.status(201).json({ message: "Rating added", rating: newRating });
+    const newRating = await Rating.create({ userId, storeId, rating, comment });
+    res.status(201).json(newRating);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// Get all ratings for a store
+// Delete Rating
+exports.deleteRating = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const rating = await Rating.findOne({ where: { id, userId } });
+    if (!rating) return res.status(404).json({ message: "Rating not found" });
+
+    await rating.destroy();
+    res.json({ message: "Rating deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get Ratings for a Store
 exports.getStoreRatings = async (req, res) => {
   try {
     const { storeId } = req.params;
-
     const ratings = await Rating.findAll({
       where: { storeId },
-      include: [{ model: User, attributes: ["id", "name", "email"] }],
+      include: [{ model: User, attributes: ["id", "name"] }]
     });
-
     res.json(ratings);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// Get rating by logged-in user for a store
+// Get Current User's Rating for a Store
 exports.getMyRatingForStore = async (req, res) => {
   try {
     const { storeId } = req.params;
+    const userId = req.user.id;
 
-    const rating = await Rating.findOne({
-      where: { storeId, userId: req.user.id },
-    });
-
-    if (!rating) return res.status(404).json({ message: "You have not rated this store" });
+    const rating = await Rating.findOne({ where: { storeId, userId } });
+    if (!rating) return res.status(404).json({ message: "No rating found" });
 
     res.json(rating);
   } catch (err) {
@@ -70,19 +69,33 @@ exports.getMyRatingForStore = async (req, res) => {
   }
 };
 
-// Delete rating
-exports.deleteRating = async (req, res) => {
+// Get All Ratings with User + Store Details
+exports.getAllRatingsWithDetails = async (req, res) => {
   try {
-    const { storeId } = req.params;
+    const ratings = await Rating.findAll({
+      include: [
+        { model: User, attributes: ["id", "name", "email"] },
+        { model: Store, attributes: ["id", "name", "location"] }
+      ],
+    });
+    res.json(ratings);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-    const rating = await Rating.findOne({
-      where: { storeId, userId: req.user.id },
+// Get All Ratings by a Specific User
+exports.getUserRatings = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const ratings = await Rating.findAll({
+      where: { userId },
+      include: [{ model: Store, attributes: ["id", "name", "location"] }]
     });
 
-    if (!rating) return res.status(404).json({ message: "Rating not found" });
+    if (!ratings.length) return res.status(404).json({ message: "No ratings found" });
 
-    await rating.destroy();
-    res.json({ message: "Rating deleted successfully" });
+    res.json(ratings);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

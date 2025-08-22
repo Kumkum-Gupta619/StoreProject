@@ -8,9 +8,12 @@ const role = require("../middleware/role.middleware");
 router.get("/", storeController.getAllStores);
 router.get("/:id", storeController.getStoreById);
 
-// Only StoreOwner can create/update their store
-router.post("/", auth, role("owner"), storeController.createStore);
-router.put("/:id", auth, role("owner"), storeController.updateStore);
-router.delete("/:id", auth, role("owner"), storeController.deleteStore);
+// Get rating for a specific store (public)
+router.get("/:id/rating", storeController.getStoreRating);
+
+// Only StoreOwner can create/update/delete their store
+router.post("/", auth, role(["owner"]), storeController.createStore);
+router.put("/:id", auth, role(["owner"]), storeController.updateStore);
+router.delete("/:id", auth, role(["owner"]), storeController.deleteStore);
 
 module.exports = router;

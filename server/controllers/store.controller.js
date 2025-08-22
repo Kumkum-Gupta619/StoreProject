@@ -1,76 +1,59 @@
 const Store = require("../models/store.model");
+const Rating = require("../models/rating.model"); // import Rating model
 
-// Get all stores
+// Get all stores (placeholder)
 exports.getAllStores = async (req, res) => {
-  try {
-    const stores = await Store.findAll();
-    res.json(stores);
-  } catch (err) {
-    res.status(500).json({ error: err.message, details: err.errors });
-
-  }
+  res.json({ message: "getAllStores placeholder" });
 };
 
-// Get store by ID
+// Get store by ID (placeholder)
 exports.getStoreById = async (req, res) => {
-  try {
-    const store = await Store.findByPk(req.params.id );
-    if (!store) return res.status(404).json({ message: "Store not found" });
-    res.json(store);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  res.json({ message: "getStoreById placeholder" });
 };
 
-// Create store (Owner only)
-exports.createStore = async (req, res) => {
+// Get average rating for a store
+exports.getStoreRating = async (req, res) => {
   try {
-    const { name, address, storeImg } = req.body;
-    console.log(req.body);
-    const store = await Store.create({
-      name,
-      address,
-      storeImg: storeImg,
-      rating: 1,
-      ownerId: req.user.id,
+    const storeId = req.params.id;
 
+    // Check if store exists
+    const store = await Store.findByPk(storeId);
+    if (!store) return res.status(404).json({ message: "Store not found" });
+
+    // Calculate average rating
+    const result = await Rating.findAll({
+      where: { storeId },
+      attributes: [
+        [Rating.sequelize.fn("AVG", Rating.sequelize.col("rating")), "avgRating"],
+        [Rating.sequelize.fn("COUNT", Rating.sequelize.col("id")), "totalRatings"]
+      ],
+      raw: true
     });
-    res.status(201).json({ message: "Store created successfully", store });
+
+    const avgRating = result[0].avgRating || 0;
+    const totalRatings = result[0].totalRatings || 0;
+
+    res.json({
+      storeId,
+      avgRating: parseFloat(avgRating).toFixed(1),
+      totalRatings
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message, details: err.errors });
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Update store (Owner only)
+// Create store (placeholder)
+exports.createStore = async (req, res) => {
+  res.json({ message: "createStore placeholder" });
+};
+
+// Update store (placeholder)
 exports.updateStore = async (req, res) => {
-  try {
-    const { name, address } = req.body;
-    const store = await Store.findByPk(req.params.id);
-    if (!store) return res.status(404).json({ message: "Store not found" });
-
-    // ensure only owner can update
-    if (store.ownerId !== req.user.id)
-      return res.status(403).json({ message: "Unauthorized" });
-
-    await store.update({ name, address });
-    res.json({ message: "Store updated successfully", store });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  res.json({ message: "updateStore placeholder" });
 };
 
-// Delete store (Owner only)
+// Delete store (placeholder)
 exports.deleteStore = async (req, res) => {
-  try {
-    const store = await Store.findByPk(req.params.id);
-    if (!store) return res.status(404).json({ message: "Store not found" });
-
-    if (store.ownerId !== req.user.id)
-      return res.status(403).json({ message: "Unauthorized" });
-
-    await store.destroy();
-    res.json({ message: "Store deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  res.json({ message: "deleteStore placeholder" });
 };
