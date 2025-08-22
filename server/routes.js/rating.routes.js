@@ -7,7 +7,7 @@ const { addOrUpdateRating, deleteRating, getMyRatingForStore, getStoreRatings } 
 router.post("/", auth, addOrUpdateRating);
 
 // Users can update their rating
-router.put("/:id", auth, addOrUpdateRating);
+// router.put("/:id", auth, addOrUpdateRating);
 
 // View ratings for a store
 router.get("/store/:storeId", auth, getStoreRatings);

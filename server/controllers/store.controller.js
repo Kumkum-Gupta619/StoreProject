@@ -20,9 +20,7 @@ exports.getAllStores = async (req, res) => {
 // Get store by ID
 exports.getStoreById = async (req, res) => {
   try {
-    const store = await Store.findByPk(req.params.id, {
-      include: [{ model: Rating }],
-    });
+    const store = await Store.findByPk(req.params.id );
     if (!store) return res.status(404).json({ message: "Store not found" });
     res.json(store);
   } catch (err) {

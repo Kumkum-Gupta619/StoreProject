@@ -13,13 +13,11 @@ exports.addOrUpdateRating = async (req, res) => {
     // console.log(store);
     if (!store) return res.status(404).json({ message: "Store not found" });
 
-    // check if user already rated this store
     let existingRating = await Rating.findOne({
       where: { storeId, userId: req.user.id },
     });
 
     if (existingRating) {
-      // update rating
       existingRating.rating = rating;
       existingRating.comment = comment;
       await existingRating.save();

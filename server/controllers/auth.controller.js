@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 // const { User } = require("../models/user.model.js");   // Sequelize User model
 const users = require("../models/user.model.js")
 
+
 // Signup
 exports.signup = async (req, res) => {
   try {
