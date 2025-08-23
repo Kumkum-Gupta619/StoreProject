@@ -62,6 +62,12 @@ exports.getStoreById = async (req, res) => {
       return res.status(404).json({ message: "Store not found" });
     }
 
+    const rating = await Rating.findAll({
+      where: {
+        storeId: id
+      }
+    })
+    console.log(rating);
     const totalRatings = store.ratings.length;
     const avgRating =
       totalRatings > 0
@@ -84,7 +90,7 @@ exports.getStoreById = async (req, res) => {
         },
         avgRating: avgRating || "No ratings yet",
         totalRatings,
-        ratings: store.ratings, // if you want to show them individually
+        ratings: rating,
       },
     });
   } catch (error) {

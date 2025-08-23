@@ -1,10 +1,12 @@
 const db = require("../models");
 const { Rating, User, Store } = db;  // Destructure models from db
 const { Sequelize } = require("sequelize");
+const { login } = require("./auth.controller");
 
 // Add or Update Rating
 exports.addOrUpdateRating = async (req, res) => {
   const { rating, comment, storeId } = req.body;
+  console.log(req.body);
   try {
     const userId = req.user.id;
     let existingRating = await Rating.findOne({ where: { userId, storeId } });
