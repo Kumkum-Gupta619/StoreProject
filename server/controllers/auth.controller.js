@@ -25,13 +25,17 @@ exports.signup = async (req, res) => {
       role: role || "User",
       address,
     });
+    console.log(user);
+
 
     res.status(201).json({
       success: true,
       message: "User registered successfully", user
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.log({ error: err.message, details: err.errors });
+
+    res.status(500).json({ error: err.message, details: err.errors });
   }
 };
 

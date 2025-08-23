@@ -10,7 +10,7 @@ const Rating = sequelize.define(
     rating: { type: DataTypes.INTEGER, allowNull: false },
     comment: { type: DataTypes.STRING },
   },
-  { timestamps: false }
+  { timestamps: true }
 );
 
 

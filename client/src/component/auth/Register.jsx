@@ -70,7 +70,7 @@ const Register = () => {
             setIsLoading(false);
         }
     };
-    console.log(input);
+    console.log(input, "working input");
     const token = localStorage.getItem("token");
     useEffect(() => {
         if (token) navigate("/stores");

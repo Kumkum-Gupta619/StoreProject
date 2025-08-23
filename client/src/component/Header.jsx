@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Popover, PopoverTrigger, PopoverContent } from "@radix-ui/react-popover";
 import { toast } from "sonner";
 import { Avatar, AvatarImage } from "./ui/avatar";
+import { useEffect } from "react";
 
 const Header = ({ user, setUser }) => {
     const UserNavLinks = [
@@ -27,24 +28,22 @@ const Header = ({ user, setUser }) => {
 
     const logoutHandler = async () => {
         try {
-            // Call your API directly (no redux dispatch)
-            const res = await api.get(`/api/user/logout`, {
-                withCredentials: true,
-            });
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
 
-            if (res.data.success) {
-                setUser(null); // just reset user state from parent
-                navigate("/");
-                toast.success(res.data.message);
-            }
+            navigate("/login");
+
+            toast.success("Logged out successfully");
         } catch (error) {
             console.log("Error", error.message);
-            toast.error(error.response?.message || "Logout failed");
+            toast.error("Logout failed");
         }
     };
 
     const isActiveLink = (path) => location.pathname === path;
+    useEffect(() => {
 
+    })
     return (
         <header className="bg-white border-b border-gray-200">
             <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
@@ -115,7 +114,7 @@ const Header = ({ user, setUser }) => {
                                             </button>
                                         </Link>
                                         <Link to="/login">
-                                            <button className="bg-red-600 text-white hover:bg-red-700 shadow-sm">
+                                            <button className="hidden sm:flex border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300">
                                                 Login
                                             </button>
                                         </Link>

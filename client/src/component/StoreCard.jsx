@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const StoreCard = ({ store }) => {
     const navigate = useNavigate();
+    console.log(store, "data of the ");
 
     return (
         <div className="bg-white border-2 border-gray-100 rounded-2xl shadow-md cursor-pointer p-3">

@@ -15,7 +15,7 @@ const Footer = () => {
                         </p>
 
                         <Link
-                            to="/jobs"
+                            to="/stores"
                             className="mt-8 inline-block rounded-full border border-red-700 px-12 py-3 text-sm font-medium text-red-600 hover:bg-red-700 hover:text-white focus:ring-3 focus:outline-hidden"
                         >
                             Explore

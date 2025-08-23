@@ -4,8 +4,17 @@ import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { api } from "@/api/api";
 import axios from "axios";
+import RatingPopup from "./RatingPopup";
 const API_BASE = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
 const StoreDetails = () => {
+
+    const [showPopup, setShowPopup] = useState(false);
+
+    const handleSubmitRating = ({ rating, message }) => {
+        console.log("User rating:", rating);
+        console.log("User message:", message);
+
+    };
     const { id } = useParams();
     const [store, setStore] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -52,7 +61,7 @@ const StoreDetails = () => {
 
             if (res.data.success) {
                 toast.success("Thanks for rating!");
-                setIsRated(false);
+                setIsRated(true);
                 setStore((prev) => ({
                     ...prev,
                     ratings: [...(prev.ratings || []), { userId: res.data.userId, rating: 5 }],
@@ -124,14 +133,19 @@ const StoreDetails = () => {
                         </li>
                     </ul>
                 </div>
-
-                <Button
-                    onClick={isRated ? null : handleRate}
-                    className={`${isRated ? "bg-red-400 cursor-not-allowed" : "bg-red-700"
-                        }  hover:bg-red-800 hover:text-white`}
+                <button
+                    onClick={() => setShowPopup(true)}
+                    className="mt-4 py-2 px-4 bg-red-500 text-white rounded-xl"
                 >
-                    {isRated ? "Already Rated" : "Rate Store"}
-                </Button>
+                    Rate this store
+                </button>
+
+                <RatingPopup
+                    isOpen={showPopup}
+                    onClose={() => setShowPopup(false)}
+                    storeId={id}
+                />
+
             </div>
         </div>
     );

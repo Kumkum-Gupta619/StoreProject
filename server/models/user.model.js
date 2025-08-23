@@ -11,7 +11,7 @@ const User = sequelize.define("Users", {
   }
 },
   {
-    timestamps: false,
+    timestamps: true,
   }
 );
 
